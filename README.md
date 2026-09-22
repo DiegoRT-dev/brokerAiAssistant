@@ -9,7 +9,7 @@ Este proyecto fue desarrollado con asistencia de inteligencia artificial (Claude
 
 ## Puesta en marcha (modo demo, gratis)
 
-https://broker-ai-assistant.vercel.app/
+Demo en Vercel: https://broker-ai-assistant.vercel.app/
 
 La app arranca en **modo demo**: no llama a Anthropic, no necesita clave y no
 cuesta nada.
