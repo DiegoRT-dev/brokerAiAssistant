@@ -1,69 +1,226 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
+import { IconoFlecha, IconoInfo, IconoSpinner } from "@/components/Iconos";
+import { ResultPanel, type ResultStatus } from "@/components/ResultPanel";
+import { TextAreaField } from "@/components/TextAreaField";
+import { DEMO_MODE } from "@/lib/config";
+import {
+  EJEMPLO_CLIENTE,
+  EJEMPLO_DOCUMENTOS,
+  EJEMPLO_PROPIEDADES,
+  PLACEHOLDER_DOCUMENTOS,
+} from "@/lib/ejemplos";
 
 export default function Home() {
+  const [datosCliente, setDatosCliente] = useState("");
+  const [propiedades, setPropiedades] = useState("");
+  const [documentos, setDocumentos] = useState("");
+
+  const [status, setStatus] = useState<ResultStatus>("idle");
+  const [resultado, setResultado] = useState("");
+  const [error, setError] = useState("");
+  const [truncated, setTruncated] = useState(false);
+  const [segundos, setSegundos] = useState(0);
+
+  const abortRef = useRef<AbortController | null>(null);
+
+  // Contador de espera: sin streaming en pantalla, es la única señal de que la
+  // generación sigue viva durante los 30-90 s que tarda.
+  useEffect(() => {
+    if (status !== "loading") return;
+    const id = setInterval(() => setSegundos((s) => s + 1), 1000);
+    return () => clearInterval(id);
+  }, [status]);
+
+  // Si el componente se desmonta a mitad de una generación, se corta la petición.
+  useEffect(() => () => abortRef.current?.abort(), []);
+
+  const generando = status === "loading";
+  const puedeGenerar =
+    datosCliente.trim().length > 0 && propiedades.trim().length > 0;
+  const vacio =
+    datosCliente.trim().length === 0 &&
+    propiedades.trim().length === 0 &&
+    documentos.trim().length === 0;
+
+  function usarEjemplo() {
+    setDatosCliente(EJEMPLO_CLIENTE);
+    setPropiedades(EJEMPLO_PROPIEDADES);
+    setDocumentos(EJEMPLO_DOCUMENTOS);
+  }
+
+  function cancelar() {
+    abortRef.current?.abort();
+    abortRef.current = null;
+    setStatus(resultado ? "done" : "idle");
+  }
+
+  async function generar(event: React.FormEvent) {
+    event.preventDefault();
+    if (!puedeGenerar || generando) return;
+
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    setStatus("loading");
+    setSegundos(0);
+    setError("");
+    setResultado("");
+    setTruncated(false);
+
+    try {
+      const respuesta = await fetch("/api/recommendations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ datosCliente, propiedades, documentos }),
+        signal: controller.signal,
+      });
+
+      const datos = await respuesta.json().catch(() => null);
+
+      if (!respuesta.ok) {
+        setError(
+          datos?.error ??
+            `El servidor respondió con un error (${respuesta.status}).`,
+        );
+        setStatus("error");
+        return;
+      }
+
+      setResultado(datos.text);
+      setTruncated(Boolean(datos.truncated));
+      setStatus("done");
+    } catch (err) {
+      // Una cancelación deliberada no es un error que mostrar.
+      if (err instanceof DOMException && err.name === "AbortError") return;
+      setError(
+        "No se pudo contactar al servidor. Revisa que la app siga corriendo e inténtalo de nuevo.",
+      );
+      setStatus("error");
+    } finally {
+      abortRef.current = null;
+    }
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <main className="mx-auto w-full max-w-[1400px] px-4 pb-16 sm:px-6 lg:px-8">
+      {DEMO_MODE && <FranjaDemo />}
+
+      <div className="grid gap-6 pt-6 lg:grid-cols-12 xl:gap-10">
+        <form onSubmit={generar} className="space-y-4 lg:col-span-5">
+          <TextAreaField
+            id="datos-cliente"
+            step={1}
+            label="Datos del Cliente"
+            description="Datos personales, preferencias de búsqueda y situación financiera."
+            value={datosCliente}
+            onChange={setDatosCliente}
+            placeholder={EJEMPLO_CLIENTE}
+            rows={12}
+            disabled={generando}
+            accion={
+              vacio && !generando ? (
+                <button
+                  type="button"
+                  onClick={usarEjemplo}
+                  className="rounded-md text-xs font-semibold text-marca underline underline-offset-2 transition-colors duration-200 hover:text-marca-fuerte focus:outline-none focus-visible:ring-2 focus-visible:ring-marca/30"
+                >
+                  Usar datos de ejemplo
+                </button>
+              ) : null
+            }
+          />
+
+          <TextAreaField
+            id="propiedades"
+            step={2}
+            label="Lista de Propiedades"
+            description="Una propiedad por bloque: ubicación, precio, cuartos, baños y características."
+            value={propiedades}
+            onChange={setPropiedades}
+            placeholder={EJEMPLO_PROPIEDADES}
+            rows={12}
+            disabled={generando}
+          />
+
+          <TextAreaField
+            id="documentos"
+            step={3}
+            label="Documentos / Información adicional"
+            description="Cualquier contexto extra que deba considerarse."
+            value={documentos}
+            onChange={setDocumentos}
+            placeholder={PLACEHOLDER_DOCUMENTOS}
+            rows={5}
+            optional
+            disabled={generando}
+          />
+
+          <div className="rounded-2xl border border-linea bg-superficie p-4 shadow-tarjeta sm:p-5">
+            <button
+              type="submit"
+              disabled={!puedeGenerar || generando}
+              aria-busy={generando}
+              className="flex w-full items-center justify-center gap-2.5 rounded-xl bg-marca px-6 py-3.5 text-[15px] font-semibold text-marca-contraste shadow-sm transition duration-200 hover:bg-marca-fuerte focus:outline-none focus-visible:ring-4 focus-visible:ring-marca/30 active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-superficie-2 disabled:text-texto-suave disabled:shadow-none disabled:active:scale-100"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              {generando ? (
+                <>
+                  <IconoSpinner className="size-4.5 animate-spin" />
+                  Generando…
+                </>
+              ) : (
+                <>
+                  Generar recomendaciones
+                  <IconoFlecha className="size-4.5" />
+                </>
+              )}
+            </button>
+
+            <p className="mt-2.5 text-center text-xs leading-relaxed text-texto-suave">
+              {!puedeGenerar
+                ? "Completa los pasos 1 y 2 para continuar."
+                : generando
+                  ? "Puedes cancelar la generación desde el panel de resultados."
+                  : "Obtendrás el análisis comparativo y un email listo para enviar."}
+            </p>
+          </div>
+        </form>
+
+        <div className="lg:sticky lg:top-[calc(var(--alto-header)_+_1.5rem)] lg:col-span-7 lg:flex lg:max-h-[calc(100dvh_-_var(--alto-header)_-_3rem)] lg:self-start">
+          <ResultPanel
+            status={status}
+            resultado={resultado}
+            error={error}
+            truncated={truncated}
+            segundos={segundos}
+            onCancelar={cancelar}
+          />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </div>
+    </main>
+  );
+}
+
+/**
+ * Franja informativa del modo demo.
+ *
+ * El chip del header ya lo señala; esta línea explica qué significa, para que
+ * nadie confunda el resultado con un análisis hecho por Claude.
+ */
+function FranjaDemo() {
+  return (
+    <div
+      role="status"
+      className="mt-4 flex items-start gap-2.5 rounded-xl border border-aviso-borde bg-aviso-suave px-4 py-2.5 text-[13px] leading-relaxed text-aviso-texto"
+    >
+      <IconoInfo className="mt-0.5 size-4 shrink-0 text-aviso" />
+      <p>
+        <strong className="font-semibold">Modo Demo:</strong> el análisis se
+        genera localmente comparando el texto que pegas, sin llamar a ninguna
+        API. Más adelante se conectará Claude.
+      </p>
     </div>
   );
 }

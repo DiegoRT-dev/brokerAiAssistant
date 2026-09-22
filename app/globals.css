@@ -1,26 +1,191 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* ───────────────────────────────────────────────────────────────────────────
+   Tokens de diseño.
+
+   Todo el color de la app sale de aquí. Cada token tiene un valor claro y uno
+   oscuro, así que los componentes usan `bg-superficie` o `text-texto-suave`
+   sin repetir una variante `dark:` por clase.
+   ─────────────────────────────────────────────────────────────────────────── */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --alto-header: 4rem;
+
+  --fondo: #f5f8f7;
+  --superficie: #ffffff;
+  --superficie-2: #f1f5f4;
+  --linea: #e3e9e7;
+  --linea-fuerte: #cbd6d2;
+
+  --texto: #111b19;
+  --texto-suave: #5b6b66;
+
+  --marca: #0d8f70;
+  --marca-fuerte: #0a7359;
+  --marca-suave: #eafaf4;
+  --marca-borde: #b3e6d5;
+  --marca-contraste: #ffffff;
+
+  --aviso: #b45309;
+  --aviso-suave: #fef6e7;
+  --aviso-borde: #f5d9a8;
+  --aviso-texto: #7c430b;
+
+  --peligro: #b91c1c;
+  --peligro-suave: #fdf0ef;
+  --peligro-borde: #f3c4c1;
+  --peligro-texto: #8f1b1b;
+
+  --sombra-tarjeta: 0 1px 2px rgb(16 32 28 / 0.04), 0 1px 3px rgb(16 32 28 / 0.06);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@media (min-width: 640px) {
+  :root {
+    --alto-header: 4.5rem;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --fondo: #0a100e;
+    --superficie: #111917;
+    --superficie-2: #18211f;
+    --linea: #24302d;
+    --linea-fuerte: #35433f;
+
+    --texto: #e9efed;
+    --texto-suave: #93a5a0;
+
+    --marca: #34d399;
+    --marca-fuerte: #6ee7b7;
+    --marca-suave: #0e2620;
+    --marca-borde: #1f4a3d;
+    --marca-contraste: #04211a;
+
+    --aviso: #fbbf24;
+    --aviso-suave: #251c0c;
+    --aviso-borde: #4a3812;
+    --aviso-texto: #fcd34d;
+
+    --peligro: #f87171;
+    --peligro-suave: #2a1414;
+    --peligro-borde: #4d2222;
+    --peligro-texto: #fca5a5;
+
+    --sombra-tarjeta: 0 1px 2px rgb(0 0 0 / 0.4), 0 1px 3px rgb(0 0 0 / 0.3);
   }
 }
 
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --color-fondo: var(--fondo);
+  --color-superficie: var(--superficie);
+  --color-superficie-2: var(--superficie-2);
+  --color-linea: var(--linea);
+  --color-linea-fuerte: var(--linea-fuerte);
+
+  --color-texto: var(--texto);
+  --color-texto-suave: var(--texto-suave);
+
+  --color-marca: var(--marca);
+  --color-marca-fuerte: var(--marca-fuerte);
+  --color-marca-suave: var(--marca-suave);
+  --color-marca-borde: var(--marca-borde);
+  --color-marca-contraste: var(--marca-contraste);
+
+  --color-aviso: var(--aviso);
+  --color-aviso-suave: var(--aviso-suave);
+  --color-aviso-borde: var(--aviso-borde);
+  --color-aviso-texto: var(--aviso-texto);
+
+  --color-peligro: var(--peligro);
+  --color-peligro-suave: var(--peligro-suave);
+  --color-peligro-borde: var(--peligro-borde);
+  --color-peligro-texto: var(--peligro-texto);
+
+  --shadow-tarjeta: var(--sombra-tarjeta);
+}
+
+html {
+  color-scheme: light dark;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Cifras de la misma anchura: las columnas de precio y score de la tabla
+   comparativa se leen en vertical solo si los dígitos se alinean. */
+.cifras {
+  font-variant-numeric: tabular-nums;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+/* ─── Movimiento ─────────────────────────────────────────────────────────── */
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes brillo {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+.aparecer {
+  animation: aparecer 0.35s ease-out both;
+}
+
+.brillo {
+  animation: brillo 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aparecer,
+  .brillo {
+    animation: none;
+  }
+}
+
+/* ─── Tipografía de los resultados ───────────────────────────────────────── */
+
+/* El plugin `typography` da el ritmo vertical; los colores salen de los
+   tokens para que claro y oscuro se resuelvan en un solo sitio. */
+.prose-resultado {
+  --tw-prose-body: var(--texto);
+  --tw-prose-headings: var(--texto);
+  --tw-prose-lead: var(--texto-suave);
+  --tw-prose-links: var(--marca);
+  --tw-prose-bold: var(--texto);
+  --tw-prose-counters: var(--texto-suave);
+  --tw-prose-bullets: var(--marca-borde);
+  --tw-prose-hr: var(--linea);
+  --tw-prose-quotes: var(--texto);
+  --tw-prose-quote-borders: var(--marca-borde);
+  --tw-prose-captions: var(--texto-suave);
+  --tw-prose-code: var(--texto);
+  --tw-prose-pre-code: var(--texto);
+  --tw-prose-pre-bg: var(--superficie-2);
+  --tw-prose-th-borders: var(--linea);
+  --tw-prose-td-borders: var(--linea);
 }
