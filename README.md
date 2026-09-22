@@ -4,6 +4,9 @@ Herramienta para brokers inmobiliarios: pega los datos del cliente y la lista de
 propiedades, y obtén un análisis comparativo más un email listo para enviar,
 generado con Claude.
 
+## Desarrollo
+Este proyecto fue desarrollado con asistencia de inteligencia artificial (Claude).
+
 ## Puesta en marcha (modo demo, gratis)
 
 La app arranca en **modo demo**: no llama a Anthropic, no necesita clave y no
