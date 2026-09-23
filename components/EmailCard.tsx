@@ -18,7 +18,7 @@ export function EmailCard({ email }: { email: string }) {
   return (
     <section
       aria-label="Email para el cliente"
-      className="aparecer mt-8 overflow-hidden rounded-2xl border border-marca-borde bg-superficie shadow-tarjeta sm:mt-10"
+      className="aparecer mt-8 w-full max-w-full min-w-0 overflow-hidden rounded-2xl border border-marca-borde bg-superficie shadow-tarjeta sm:mt-10"
     >
       <div className="h-1 bg-marca" aria-hidden />
 
@@ -46,7 +46,11 @@ export function EmailCard({ email }: { email: string }) {
           <span className="text-[11px] font-semibold tracking-wide text-texto-suave uppercase">
             Asunto
           </span>
-          <span className="text-[15px] font-medium text-texto">{asunto}</span>
+          {/* El asunto es el único texto largo que se pinta fuera de
+              `.prose-resultado`, así que aquí hace falta partir palabras. */}
+          <span className="min-w-0 text-[15px] font-medium break-words text-texto">
+            {asunto}
+          </span>
         </div>
       )}
 

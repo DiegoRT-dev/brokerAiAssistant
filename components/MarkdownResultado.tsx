@@ -15,7 +15,7 @@ import remarkGfm from "remark-gfm";
  */
 export function MarkdownResultado({ children }: { children: string }) {
   return (
-    <div className="prose prose-resultado max-w-none text-[14px] leading-relaxed break-words sm:text-[15px] prose-p:my-3 prose-li:my-1 prose-strong:font-semibold">
+    <div className="prose prose-resultado w-full max-w-none min-w-0 text-[14px] leading-relaxed break-words sm:text-[15px] prose-p:my-3 prose-li:my-1 prose-strong:font-semibold">
       <Markdown remarkPlugins={[remarkGfm]} components={componentes}>
         {children}
       </Markdown>
@@ -71,10 +71,14 @@ const componentes: Components = {
    * manera. En lugar de apretarla hasta lo ilegible, se le da un ancho mínimo
    * y se desplaza en horizontal, con las sombras de `scroll-sombra` y un aviso
    * para que se vea que hay más columnas a la derecha.
+   *
+   * El envoltorio lleva `w-full max-w-full min-w-0` a propósito: es lo que
+   * mantiene el ancho mínimo de la tabla encerrado en su propio scroll en
+   * lugar de dejar que ensanche el panel y, detrás, la página entera.
    */
   table: ({ children }) => (
-    <div className="my-5 sm:my-6">
-      <div className="scroll-sombra overflow-x-auto rounded-xl border border-linea">
+    <div className="my-5 w-full max-w-full min-w-0 sm:my-6">
+      <div className="scroll-sombra w-full max-w-full min-w-0 overflow-x-auto rounded-xl border border-linea">
         <table className="my-0 w-full min-w-[46rem] border-collapse text-sm">
           {children}
         </table>
@@ -114,7 +118,7 @@ const componentes: Components = {
   ),
 
   pre: ({ children }) => (
-    <pre className="my-4 overflow-x-auto rounded-xl border border-linea bg-superficie-2 p-3 font-mono text-[12px] leading-6 text-texto sm:p-4 sm:text-[12.5px]">
+    <pre className="my-4 w-full max-w-full min-w-0 overflow-x-auto rounded-xl border border-linea bg-superficie-2 p-3 font-mono text-[12px] leading-6 text-texto sm:p-4 sm:text-[12.5px]">
       {children}
     </pre>
   ),

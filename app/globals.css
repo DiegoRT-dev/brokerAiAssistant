@@ -117,6 +117,13 @@ html {
 
 body {
   -webkit-font-smoothing: antialiased;
+
+  /* Red de seguridad contra el scroll horizontal en móvil. Es `clip` y no
+     `hidden` a propósito: `hidden` crearía un contenedor de scroll y rompería
+     los tres `position: sticky` de la app (header, barra de acción y panel de
+     resultados). El arreglo de verdad son los `min-w-0` de las columnas; esto
+     solo evita que un desborde futuro vuelva a ensanchar la página. */
+  overflow-x: clip;
 }
 
 /**

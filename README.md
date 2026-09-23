@@ -49,7 +49,8 @@ Todo se apila, y además:
   pantalla, así que está a mano mientras se rellenan los campos.
 - Al generar, la vista baja sola al panel de resultados.
 - La tabla comparativa se desliza en horizontal con un aviso y sombras en los
-  bordes, en lugar de apretar sus 9 columnas hasta lo ilegible.
+  bordes, en lugar de apretar sus 9 columnas hasta lo ilegible. Se desliza
+  **solo ella**: la página nunca se sale de la pantalla a lo ancho.
 - Los campos usan 16 px para que Safari de iPhone no haga zoom al enfocarlos, y
   los botones tienen el alto suficiente para el dedo.
 

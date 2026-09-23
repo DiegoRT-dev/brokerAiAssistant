@@ -123,8 +123,11 @@ export default function Home() {
     <main className="mx-auto w-full max-w-[1400px] px-4 pb-8 sm:px-6 lg:px-8 lg:pb-16">
       {DEMO_MODE && <FranjaDemo />}
 
-      <div className="grid gap-5 pt-5 sm:gap-6 sm:pt-6 lg:grid-cols-12 xl:gap-10">
-        <form onSubmit={generar} className="space-y-4 lg:col-span-5">
+      {/* `min-w-0` en la rejilla y en sus dos columnas: un item de grid no se
+          encoge por debajo del ancho mínimo de su contenido, así que sin esto
+          la tabla comparativa ensancha la columna y, con ella, la página. */}
+      <div className="grid min-w-0 gap-5 pt-5 sm:gap-6 sm:pt-6 lg:grid-cols-12 xl:gap-10">
+        <form onSubmit={generar} className="min-w-0 space-y-4 lg:col-span-5">
           <TextAreaField
             id="datos-cliente"
             step={1}
@@ -208,7 +211,7 @@ export default function Home() {
 
         <div
           ref={resultadosRef}
-          className="scroll-mt-[calc(var(--alto-header)_+_1rem)] lg:sticky lg:top-[calc(var(--alto-header)_+_1.5rem)] lg:col-span-7 lg:flex lg:max-h-[calc(100dvh_-_var(--alto-header)_-_3rem)] lg:self-start"
+          className="min-w-0 scroll-mt-[calc(var(--alto-header)_+_1rem)] lg:sticky lg:top-[calc(var(--alto-header)_+_1.5rem)] lg:col-span-7 lg:flex lg:max-h-[calc(100dvh_-_var(--alto-header)_-_3rem)] lg:self-start"
         >
           <ResultPanel
             status={status}
