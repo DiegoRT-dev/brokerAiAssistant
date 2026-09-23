@@ -10,6 +10,8 @@ type CopyEmailButtonProps = {
   /** La sección 6 ya aislada, o `null` si no se pudo reconocer. */
   email: string | null;
   variante?: "sutil" | "principal";
+  /** Clases extra del sitio donde se usa (ancho completo en móvil, etc.). */
+  className?: string;
 };
 
 /**
@@ -20,6 +22,7 @@ type CopyEmailButtonProps = {
 export function CopyEmailButton({
   email,
   variante = "sutil",
+  className = "",
 }: CopyEmailButtonProps) {
   const [estado, setEstado] = useState<Estado>("idle");
 
@@ -45,7 +48,7 @@ export function CopyEmailButton({
     return (
       <span
         title="No se encontró la sección “Email para el cliente” en la respuesta. Cópiala manualmente."
-        className="inline-flex cursor-not-allowed items-center gap-2 rounded-lg border border-linea px-3 py-2 text-sm font-medium text-texto-suave/70"
+        className={`inline-flex min-h-11 cursor-not-allowed items-center gap-2 rounded-lg border border-linea px-3 py-2 text-sm font-medium text-texto-suave/70 sm:min-h-0 ${className}`}
       >
         <IconoCopiar className="size-4" />
         Email no detectado
@@ -63,7 +66,7 @@ export function CopyEmailButton({
       type="button"
       onClick={copiar}
       aria-live="polite"
-      className={`inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition duration-200 focus:outline-none focus-visible:ring-4 ${estilo}`}
+      className={`inline-flex min-h-11 items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition duration-200 focus:outline-none focus-visible:ring-4 sm:min-h-0 ${estilo} ${className}`}
     >
       {estado === "copiado" ? (
         <IconoCheck className="size-4" />

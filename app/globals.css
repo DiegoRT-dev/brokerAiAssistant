@@ -111,10 +111,32 @@
 
 html {
   color-scheme: light dark;
+  /* iOS reescala el texto al girar el teléfono si no se le dice que no. */
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   -webkit-font-smoothing: antialiased;
+}
+
+/**
+ * Sombras que avisan de que un contenedor se puede desplazar en horizontal.
+ *
+ * Los degradados blancos van anclados al contenido (`local`) y los oscuros al
+ * contenedor (`scroll`): cuando queda tabla por ver, el degradado blanco se
+ * desplaza y deja asomar la sombra; al llegar al extremo la tapa. Sin esto, en
+ * un móvil no hay forma de saber que la tabla comparativa sigue a la derecha.
+ */
+.scroll-sombra {
+  background:
+    linear-gradient(to right, var(--superficie) 30%, transparent) left center /
+      2.5rem 100% no-repeat local,
+    linear-gradient(to left, var(--superficie) 30%, transparent) right center /
+      2.5rem 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, rgb(0 0 0 / 0.14), transparent) left
+      center / 0.75rem 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, rgb(0 0 0 / 0.14), transparent)
+      right center / 0.75rem 100% no-repeat scroll;
 }
 
 /* Cifras de la misma anchura: las columnas de precio y score de la tabla
@@ -188,4 +210,8 @@ h3 {
   --tw-prose-pre-bg: var(--superficie-2);
   --tw-prose-th-borders: var(--linea);
   --tw-prose-td-borders: var(--linea);
+
+  /* El texto viene de lo que pegó el broker: una dirección o un correo muy
+     largo no puede ensanchar el panel en un móvil. */
+  overflow-wrap: break-word;
 }

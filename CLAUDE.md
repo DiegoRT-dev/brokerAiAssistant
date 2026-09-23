@@ -87,6 +87,8 @@ Producto sobrio y profesional, pensado para que un broker lo tenga abierto mient
 - **Los resultados** se estilizan en `components/MarkdownResultado.tsx`: cada `##` se pinta como cabecera con su número, así que las 6 secciones se distinguen al scrollear; la tabla comparativa tiene encabezado sombreado, cifras alineadas y scroll propio; las citas se muestran como avisos. Hay estado vacío con los pasos a seguir, esqueleto de carga con contador y botón de cancelar, y estado de error.
 - **La sección 6 va aparte**, en una tarjeta de correo con el asunto destacado y su propio botón de copiar (`components/EmailCard.tsx`, alimentada por `splitEmail`). Es lo único de toda la respuesta que llega al cliente.
 - **Color y movimiento**: paleta verde esmeralda sobre grises neutros, definida como tokens en `app/globals.css` con su valor claro y su valor oscuro; transiciones suaves que se anulan con `prefers-reduced-motion`.
+- **Responsive de verdad, no solo apilado.** En móvil y tablet: el botón de generar vive en una **barra pegada al borde inferior** (el formulario son tres campos largos y el botón quedaba enterrado), al generar la vista **baja sola al panel de resultados**, los textareas usan **16 px** —por debajo de eso Safari de iOS hace zoom al enfocar— y los botones tienen 44 px de alto. El panel pegado con scroll propio es solo de `lg` hacia arriba. La barra respeta el área segura del iPhone con `env(safe-area-inset-bottom)`.
+- **La tabla comparativa se desliza.** Son 9 columnas: en lugar de apretarlas, tiene un ancho mínimo legible y scroll horizontal, con la clase `.scroll-sombra` de `app/globals.css` —sombras laterales por CSS puro que solo aparecen cuando queda contenido por ver— y un aviso debajo en pantallas pequeñas.
 
 ---
 
@@ -247,7 +249,7 @@ Terminado y verificado:
 - [x] Las 6 secciones se distinguen al scrollear; la sección 6 va en su propia tarjeta de correo
 - [x] Esqueleto de carga con contador, estado vacío con los pasos y estado de error
 - [x] Botón "Usar datos de ejemplo" que rellena los 3 campos de un clic
-- [x] Diseño responsive, sobrio, claro y oscuro
+- [x] Diseño responsive trabajado en las tres tallas: barra de acción fija en móvil, scroll automático a resultados, campos a 16 px, áreas táctiles de 44 px y tabla deslizable
 - [x] Cancelación de la generación en curso
 - [x] Modo demo que analiza de verdad el texto pegado
 - [x] Detección de zonas con confianza, que distingue estar en una zona de estar cerca

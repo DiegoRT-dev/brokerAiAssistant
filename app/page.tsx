@@ -25,6 +25,7 @@ export default function Home() {
   const [segundos, setSegundos] = useState(0);
 
   const abortRef = useRef<AbortController | null>(null);
+  const resultadosRef = useRef<HTMLDivElement | null>(null);
 
   // Contador de espera: sin streaming en pantalla, es la única señal de que la
   // generación sigue viva durante los 30-90 s que tarda.
@@ -51,6 +52,19 @@ export default function Home() {
     setDocumentos(EJEMPLO_DOCUMENTOS);
   }
 
+  /**
+   * En móvil y tablet el panel de resultados queda debajo del formulario, así
+   * que al generar no se vería nada pasar. En escritorio ya está a la vista.
+   */
+  function irAResultados() {
+    if (window.matchMedia("(min-width: 1024px)").matches) return;
+    const suave = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    resultadosRef.current?.scrollIntoView({
+      behavior: suave ? "smooth" : "auto",
+      block: "start",
+    });
+  }
+
   function cancelar() {
     abortRef.current?.abort();
     abortRef.current = null;
@@ -69,6 +83,7 @@ export default function Home() {
     setError("");
     setResultado("");
     setTruncated(false);
+    irAResultados();
 
     try {
       const respuesta = await fetch("/api/recommendations", {
@@ -105,10 +120,10 @@ export default function Home() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-[1400px] px-4 pb-16 sm:px-6 lg:px-8">
+    <main className="mx-auto w-full max-w-[1400px] px-4 pb-8 sm:px-6 lg:px-8 lg:pb-16">
       {DEMO_MODE && <FranjaDemo />}
 
-      <div className="grid gap-6 pt-6 lg:grid-cols-12 xl:gap-10">
+      <div className="grid gap-5 pt-5 sm:gap-6 sm:pt-6 lg:grid-cols-12 xl:gap-10">
         <form onSubmit={generar} className="space-y-4 lg:col-span-5">
           <TextAreaField
             id="datos-cliente"
@@ -125,7 +140,7 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={usarEjemplo}
-                  className="rounded-md text-xs font-semibold text-marca underline underline-offset-2 transition-colors duration-200 hover:text-marca-fuerte focus:outline-none focus-visible:ring-2 focus-visible:ring-marca/30"
+                  className="inline-flex min-h-11 items-center rounded-md text-xs font-semibold text-marca underline underline-offset-2 transition-colors duration-200 hover:text-marca-fuerte focus:outline-none focus-visible:ring-2 focus-visible:ring-marca/30 sm:min-h-0"
                 >
                   Usar datos de ejemplo
                 </button>
@@ -158,7 +173,10 @@ export default function Home() {
             disabled={generando}
           />
 
-          <div className="rounded-2xl border border-linea bg-superficie p-4 shadow-tarjeta sm:p-5">
+          {/* En móvil y tablet la acción se queda pegada al borde inferior: el
+              formulario son tres campos largos y el botón quedaba enterrado al
+              final. Desde lg vuelve a ser una tarjeta más de la columna. */}
+          <div className="sticky bottom-0 z-20 -mx-4 border-t border-linea bg-fondo/90 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-md sm:-mx-6 sm:px-6 lg:static lg:mx-0 lg:rounded-2xl lg:border lg:bg-superficie lg:p-5 lg:shadow-tarjeta lg:backdrop-blur-none">
             <button
               type="submit"
               disabled={!puedeGenerar || generando}
@@ -178,7 +196,7 @@ export default function Home() {
               )}
             </button>
 
-            <p className="mt-2.5 text-center text-xs leading-relaxed text-texto-suave">
+            <p className="mt-2 text-center text-[11px] leading-relaxed text-texto-suave sm:mt-2.5 sm:text-xs">
               {!puedeGenerar
                 ? "Completa los pasos 1 y 2 para continuar."
                 : generando
@@ -188,7 +206,10 @@ export default function Home() {
           </div>
         </form>
 
-        <div className="lg:sticky lg:top-[calc(var(--alto-header)_+_1.5rem)] lg:col-span-7 lg:flex lg:max-h-[calc(100dvh_-_var(--alto-header)_-_3rem)] lg:self-start">
+        <div
+          ref={resultadosRef}
+          className="scroll-mt-[calc(var(--alto-header)_+_1rem)] lg:sticky lg:top-[calc(var(--alto-header)_+_1.5rem)] lg:col-span-7 lg:flex lg:max-h-[calc(100dvh_-_var(--alto-header)_-_3rem)] lg:self-start"
+        >
           <ResultPanel
             status={status}
             resultado={resultado}
@@ -213,7 +234,7 @@ function FranjaDemo() {
   return (
     <div
       role="status"
-      className="mt-4 flex items-start gap-2.5 rounded-xl border border-aviso-borde bg-aviso-suave px-4 py-2.5 text-[13px] leading-relaxed text-aviso-texto"
+      className="mt-4 flex items-start gap-2.5 rounded-xl border border-aviso-borde bg-aviso-suave px-3 py-2.5 text-[12.5px] leading-relaxed text-aviso-texto sm:px-4 sm:text-[13px]"
     >
       <IconoInfo className="mt-0.5 size-4 shrink-0 text-aviso" />
       <p>

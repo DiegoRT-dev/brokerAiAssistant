@@ -15,7 +15,7 @@ import remarkGfm from "remark-gfm";
  */
 export function MarkdownResultado({ children }: { children: string }) {
   return (
-    <div className="prose prose-resultado max-w-none text-[15px] leading-relaxed prose-p:my-3 prose-li:my-1 prose-strong:font-semibold">
+    <div className="prose prose-resultado max-w-none text-[14px] leading-relaxed break-words sm:text-[15px] prose-p:my-3 prose-li:my-1 prose-strong:font-semibold">
       <Markdown remarkPlugins={[remarkGfm]} components={componentes}>
         {children}
       </Markdown>
@@ -44,16 +44,16 @@ const componentes: Components = {
     const partes = NUMERO_DE_SECCION.exec(texto);
 
     return (
-      <div className="mt-10 mb-4 flex items-center gap-3 border-t border-linea pt-7 first:mt-0 first:border-t-0 first:pt-0">
+      <div className="mt-8 mb-3.5 flex items-center gap-2.5 border-t border-linea pt-6 first:mt-0 first:border-t-0 first:pt-0 sm:mt-10 sm:mb-4 sm:gap-3 sm:pt-7">
         {partes && (
           <span
             aria-hidden
-            className="cifras flex size-7 shrink-0 items-center justify-center rounded-lg bg-marca-suave text-[13px] font-semibold text-marca ring-1 ring-marca-borde ring-inset"
+            className="cifras flex size-6 shrink-0 items-center justify-center rounded-lg bg-marca-suave text-xs font-semibold text-marca ring-1 ring-marca-borde ring-inset sm:size-7 sm:text-[13px]"
           >
             {partes[1]}
           </span>
         )}
-        <h2 className="m-0 text-lg font-semibold tracking-tight text-texto">
+        <h2 className="m-0 text-base font-semibold tracking-tight text-texto sm:text-lg">
           {partes ? partes[2] : texto}
         </h2>
       </div>
@@ -61,14 +61,27 @@ const componentes: Components = {
   },
 
   h3: ({ children }) => (
-    <h3 className="mt-7 mb-2 border-l-2 border-marca-borde pl-3 text-[15px] font-semibold tracking-tight text-texto">
+    <h3 className="mt-6 mb-2 border-l-2 border-marca-borde pl-2.5 text-[14px] font-semibold tracking-tight text-texto sm:mt-7 sm:pl-3 sm:text-[15px]">
       {children}
     </h3>
   ),
 
+  /**
+   * La tabla comparativa trae 9 columnas: en un móvil no cabe de ninguna
+   * manera. En lugar de apretarla hasta lo ilegible, se le da un ancho mínimo
+   * y se desplaza en horizontal, con las sombras de `scroll-sombra` y un aviso
+   * para que se vea que hay más columnas a la derecha.
+   */
   table: ({ children }) => (
-    <div className="my-6 overflow-x-auto rounded-xl border border-linea">
-      <table className="my-0 w-full border-collapse text-sm">{children}</table>
+    <div className="my-5 sm:my-6">
+      <div className="scroll-sombra overflow-x-auto rounded-xl border border-linea">
+        <table className="my-0 w-full min-w-[46rem] border-collapse text-sm">
+          {children}
+        </table>
+      </div>
+      <p className="mt-2 mb-0 text-xs text-texto-suave lg:hidden">
+        Desliza la tabla para ver todas las columnas.
+      </p>
     </div>
   ),
 
@@ -77,7 +90,7 @@ const componentes: Components = {
   ),
 
   th: ({ children }) => (
-    <th className="border-b border-linea px-3 py-2.5 text-left text-[11px] font-semibold tracking-wide text-texto-suave uppercase">
+    <th className="border-b border-linea px-2.5 py-2 text-left text-[10px] font-semibold tracking-wide text-texto-suave uppercase sm:px-3 sm:py-2.5 sm:text-[11px]">
       {children}
     </th>
   ),
@@ -89,17 +102,19 @@ const componentes: Components = {
   ),
 
   td: ({ children }) => (
-    <td className="cifras px-3 py-2.5 align-top text-texto">{children}</td>
+    <td className="cifras px-2.5 py-2 align-top text-texto sm:px-3 sm:py-2.5">
+      {children}
+    </td>
   ),
 
   blockquote: ({ children }) => (
-    <blockquote className="my-4 rounded-r-lg border-l-3 border-marca-borde bg-superficie-2 px-4 py-3 text-[14px] text-texto-suave not-italic [&_p]:my-1 [&_strong]:text-texto">
+    <blockquote className="my-4 rounded-r-lg border-l-3 border-marca-borde bg-superficie-2 px-3 py-2.5 text-[13px] text-texto-suave not-italic sm:px-4 sm:py-3 sm:text-[14px] [&_p]:my-1 [&_strong]:text-texto">
       {children}
     </blockquote>
   ),
 
   pre: ({ children }) => (
-    <pre className="my-4 overflow-x-auto rounded-xl border border-linea bg-superficie-2 p-4 font-mono text-[12.5px] leading-6 text-texto">
+    <pre className="my-4 overflow-x-auto rounded-xl border border-linea bg-superficie-2 p-3 font-mono text-[12px] leading-6 text-texto sm:p-4 sm:text-[12.5px]">
       {children}
     </pre>
   ),

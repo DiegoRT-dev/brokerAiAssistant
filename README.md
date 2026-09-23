@@ -33,13 +33,25 @@ en el primer campo: rellena los tres con un caso completo y listo para generar.
 
 - Header fijo con el indicador de modo (**Modo Demo** o **API conectada**), para
   que siempre se sepa de dónde viene el análisis.
-- Dos columnas: el formulario a la izquierda y el panel de resultados pegado a
-  la derecha, con scroll propio. En móvil se apila.
+- Dos columnas en escritorio: el formulario a la izquierda y el panel de
+  resultados pegado a la derecha, con scroll propio.
 - Las 6 secciones de la respuesta se distinguen con cabeceras numeradas, y la
   tabla comparativa se lee cómodamente incluso con muchas propiedades.
 - El email al cliente sale aparte, en una tarjeta con el asunto destacado y su
   botón de copiar.
 - Claro y oscuro según el tema del sistema, sin ajustes.
+
+### En móvil y tablet
+
+Todo se apila, y además:
+
+- El botón **Generar recomendaciones** se queda fijo en la parte inferior de la
+  pantalla, así que está a mano mientras se rellenan los campos.
+- Al generar, la vista baja sola al panel de resultados.
+- La tabla comparativa se desliza en horizontal con un aviso y sombras en los
+  bordes, en lugar de apretar sus 9 columnas hasta lo ilegible.
+- Los campos usan 16 px para que Safari de iPhone no haga zoom al enfocarlos, y
+  los botones tienen el alto suficiente para el dedo.
 
 ## Cambiar a la API real
 

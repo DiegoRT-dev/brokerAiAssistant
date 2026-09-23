@@ -11,13 +11,13 @@ import { DEMO_MODE } from "@/lib/config";
 export function AppHeader() {
   return (
     <header className="sticky top-0 z-30 border-b border-linea bg-superficie/85 backdrop-blur-md">
-      <div className="mx-auto flex h-(--alto-header) w-full max-w-[1400px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        <div className="flex min-w-0 items-center gap-3">
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-marca text-marca-contraste shadow-sm">
-            <IconoEdificio className="size-5" />
+      <div className="mx-auto flex h-(--alto-header) w-full max-w-[1400px] items-center justify-between gap-3 px-4 sm:gap-4 sm:px-6 lg:px-8">
+        <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-marca text-marca-contraste shadow-sm sm:size-9">
+            <IconoEdificio className="size-4.5 sm:size-5" />
           </span>
           <div className="min-w-0">
-            <p className="truncate text-[15px] leading-tight font-semibold tracking-tight text-texto">
+            <p className="truncate text-sm leading-tight font-semibold tracking-tight text-texto sm:text-[15px]">
               Broker AI Assistant
             </p>
             <p className="hidden truncate text-xs leading-tight text-texto-suave sm:block">
@@ -37,7 +37,7 @@ function IndicadorModo() {
     return (
       <span
         title="Modo demo: el análisis se genera localmente a partir del texto que pegas. No se llama a ninguna API."
-        className="inline-flex shrink-0 items-center gap-2 rounded-full border border-aviso-borde bg-aviso-suave px-3 py-1.5 text-xs font-semibold text-aviso-texto"
+        className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-aviso-borde bg-aviso-suave px-2.5 py-1 text-[11px] font-semibold whitespace-nowrap text-aviso-texto sm:gap-2 sm:px-3 sm:py-1.5 sm:text-xs"
       >
         <span className="size-1.5 rounded-full bg-aviso" aria-hidden />
         Modo Demo
@@ -48,7 +48,7 @@ function IndicadorModo() {
   return (
     <span
       title="Las recomendaciones se generan con la API de Claude."
-      className="inline-flex shrink-0 items-center gap-2 rounded-full border border-marca-borde bg-marca-suave px-3 py-1.5 text-xs font-semibold text-marca"
+      className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-marca-borde bg-marca-suave px-2.5 py-1 text-[11px] font-semibold whitespace-nowrap text-marca sm:gap-2 sm:px-3 sm:py-1.5 sm:text-xs"
     >
       <span className="size-1.5 rounded-full bg-marca" aria-hidden />
       API conectada

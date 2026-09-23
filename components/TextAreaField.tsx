@@ -84,10 +84,10 @@ export function TextAreaField({
         rows={rows}
         disabled={disabled}
         spellCheck={false}
-        className="mt-4 block w-full resize-y rounded-xl border border-linea bg-superficie-2 px-4 py-3 font-mono text-[13px] leading-6 text-texto outline-none transition duration-200 placeholder:text-texto-suave/60 focus:border-marca focus:bg-superficie focus:ring-4 focus:ring-marca/15 disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-4 block w-full resize-y rounded-xl border border-linea bg-superficie-2 px-3 py-3 font-mono text-base leading-6 text-texto outline-none transition duration-200 placeholder:text-texto-suave/60 focus:border-marca focus:bg-superficie focus:ring-4 focus:ring-marca/15 disabled:cursor-not-allowed disabled:opacity-60 sm:px-4 sm:text-[13px]"
       />
 
-      <div className="mt-2 flex min-h-5 items-center justify-between gap-3">
+      <div className="mt-2 flex min-h-5 flex-wrap items-center justify-between gap-x-3 gap-y-1">
         <span className="cifras text-xs text-texto-suave">
           {completado ? `${caracteres.toLocaleString("es-MX")} caracteres` : ""}
         </span>

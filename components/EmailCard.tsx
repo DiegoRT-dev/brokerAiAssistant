@@ -18,11 +18,11 @@ export function EmailCard({ email }: { email: string }) {
   return (
     <section
       aria-label="Email para el cliente"
-      className="aparecer mt-10 overflow-hidden rounded-2xl border border-marca-borde bg-superficie shadow-tarjeta"
+      className="aparecer mt-8 overflow-hidden rounded-2xl border border-marca-borde bg-superficie shadow-tarjeta sm:mt-10"
     >
       <div className="h-1 bg-marca" aria-hidden />
 
-      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-linea bg-marca-suave/60 px-4 py-3 sm:px-5">
+      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-linea bg-marca-suave/60 px-3 py-3 sm:px-5">
         <div className="flex items-center gap-2.5">
           <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-marca text-marca-contraste">
             <IconoSobre className="size-4.5" />
@@ -34,11 +34,15 @@ export function EmailCard({ email }: { email: string }) {
             <p className="text-xs text-texto-suave">Listo para enviar</p>
           </div>
         </div>
-        <CopyEmailButton email={email} variante="principal" />
+        <CopyEmailButton
+          email={email}
+          variante="principal"
+          className="w-full justify-center sm:w-auto"
+        />
       </header>
 
       {asunto && (
-        <div className="flex flex-wrap items-baseline gap-2 border-b border-linea px-4 py-3 sm:px-5">
+        <div className="flex flex-col gap-1 border-b border-linea px-3 py-3 sm:flex-row sm:flex-wrap sm:items-baseline sm:gap-2 sm:px-5">
           <span className="text-[11px] font-semibold tracking-wide text-texto-suave uppercase">
             Asunto
           </span>
@@ -46,7 +50,7 @@ export function EmailCard({ email }: { email: string }) {
         </div>
       )}
 
-      <div className="px-4 py-4 sm:px-5 sm:py-5">
+      <div className="px-3 py-4 sm:px-5 sm:py-5">
         <MarkdownResultado>{cuerpo}</MarkdownResultado>
       </div>
     </section>
